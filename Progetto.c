@@ -10,7 +10,6 @@ void Report();
 
 
 int main () {
-  scanf("%s",buff);
  do {
     scanf("%s",buff);
     if (strcmp(buff,"addent")==0){
@@ -33,6 +32,10 @@ int main () {
 
 
 void Addent(){
+  scanf("%s",buff);
+  char *id = (char *) malloc(strlen(buff) * sizeof (char));
+  id=buff;
+  printf("%s",id);
 }
 
 
