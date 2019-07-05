@@ -35,7 +35,6 @@ void Addent(){
   scanf("%s",buff);
   char *id = (char *) malloc(strlen(buff) * sizeof (char));
   strcpy(id,buff);
-  printf("%s lunghezza è %ld",id,strlen(id));
 }
 
 
@@ -49,11 +48,30 @@ void Delent(){
 
 
 void Addrel(){
+  scanf("%s",buff);
+  char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(id1,buff);
+  scanf("%s",buff);
+  char *id2 = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(id2,buff);
+  scanf("%s",buff);
+  char *idrel = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(idrel,buff);
+ 
 }
 
 
 
 void Delrel(){
+  scanf("%s",buff);
+  char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(id1,buff);
+  scanf("%s",buff);
+  char *id2 = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(id2,buff);
+  scanf("%s",buff);
+  char *idrel = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(idrel,buff);
 }
 
 
