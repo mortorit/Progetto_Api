@@ -34,13 +34,16 @@ int main () {
 void Addent(){
   scanf("%s",buff);
   char *id = (char *) malloc(strlen(buff) * sizeof (char));
-  id=buff;
-  printf("%s",id);
+  strcpy(id,buff);
+  printf("%s lunghezza è %ld",id,strlen(id));
 }
 
 
 
 void Delent(){
+  scanf("%s",buff);
+  char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
+  strcpy(id1,buff);
 }
 
 
