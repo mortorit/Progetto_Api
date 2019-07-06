@@ -119,15 +119,15 @@ void LeftRotate(punt x){
 
 void RightRotate(punt x){
    punt y;
-  if (x->r!=tnil){
-  y=x->r;
-  x->r=y->l;
-  if (y->l!=tnil) y->l->p=x;
+  if (x->l!=tnil){
+  y=x->l;
+  x->l=y->r;
+  if (y->r!=tnil) y->r->p=x;
   y->p=x->p;
   if (x->p==tnil) root=y;
-  else if (x==x->p->l) x->p->l=y;
+  else if (x==x->p->r) x->p->r=y;
   else x->p->r=y;
-  y->l=x;
+  y->r=x;
   x->p=y;
   }
 }
