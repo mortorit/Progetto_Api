@@ -2,13 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-<<<<<<< HEAD
-char buff[100000];
-void insert();
-void delete();
-void search();
-=======
->>>>>>> testing
 
 typedef struct Nodo {
   struct Nodo *r;
@@ -20,13 +13,6 @@ typedef struct Nodo {
 
 typedef Nodo *punt;
 
-<<<<<<< HEAD
-punt root= NULL;
-
-void inizializza(punt p);
-punt newnode();
-int main(){
-=======
 punt tnil=NULL; 
 punt root=NULL;
 void inizializza(punt p);
@@ -47,21 +33,16 @@ int main(){
   tnil->c=false;
   root=tnil;
   while (true){
->>>>>>> testing
   scanf("%s",buff);
   if (strcmp(buff,"insert")==0) insert();
   if (strcmp(buff,"delete")==0) delete();
   if (strcmp(buff,"search")==0) search();
-<<<<<<< HEAD
-}
-=======
   if (strcmp(buff,"visit")==0) InOrderWalk(root);
   if (strcmp(buff,"end")==0) exit(0);
 
  }
 }
   
->>>>>>> testing
 
 void insert(){
   punt y,x;
@@ -70,33 +51,14 @@ void insert(){
   new->key= (char *) malloc(strlen(buff) * sizeof (char));
   strcpy(new->key,buff);
 
-<<<<<<< HEAD
-  y=NULL;
-  x=root;
-  while (x!=NULL){
-=======
   y=tnil;
   x=root;
   while (x!=tnil){
->>>>>>> testing
     y=x;
     if (strcmp(new->key,x->key)<0) x=x->l;
     else x=x->r;  
   }
   new->p=y;
-<<<<<<< HEAD
-  if (y==NULL) root=new;
-  else if(strcmp(new->key,y->key)<0) y->l=new;
-  else y->r=new;
-  new->c=true;
-  
-}
-
-void inizializza(punt p){
-  p->r=NULL;
-  p->l=NULL;
-  p->p=NULL;
-=======
   if (y==tnil) root=new;
   else if(strcmp(new->key,y->key)<0) y->l=new;
   else y->r=new;
@@ -183,7 +145,6 @@ void inizializza(punt p){
   p->r=tnil;
   p->l=tnil;
   p->p=tnil;
->>>>>>> testing
 }
 
 punt newnode(){
@@ -194,8 +155,6 @@ punt newnode(){
 
 void delete(){}
 void search(){}
-<<<<<<< HEAD
-=======
 
 void InOrderWalk(punt start){
   if (start!=tnil){
@@ -204,4 +163,3 @@ void InOrderWalk(punt start){
   InOrderWalk(start->r);
   }
 }
->>>>>>> testing
