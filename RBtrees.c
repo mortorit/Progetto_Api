@@ -13,8 +13,8 @@ typedef struct Nodo {
 
 typedef Nodo *punt;
 
-punt root= NULL;
-punt tnil;
+punt tnil=NULL; 
+punt root=NULL;
 void inizializza(punt p);
 punt newnode();
 void insert();
@@ -23,18 +23,26 @@ void search();
 void InsertFixup(punt z);
 void RightRotate(punt x);
 void LeftRotate(punt x);
-char buff[100000];
+void InOrderWalk(punt start);
+char buff[100];
 
 int main(){
-  tnil==malloc(sizeof(Nodo));
+  tnil=malloc(sizeof(Nodo));
   tnil->r=NULL;
   tnil->l=NULL;
   tnil->c=false;
+  root=tnil;
+  while (true){
   scanf("%s",buff);
   if (strcmp(buff,"insert")==0) insert();
   if (strcmp(buff,"delete")==0) delete();
   if (strcmp(buff,"search")==0) search();
+  if (strcmp(buff,"visit")==0) InOrderWalk(root);
+  if (strcmp(buff,"end")==0) exit(0);
+
+ }
 }
+  
 
 void insert(){
   punt y,x;
@@ -74,7 +82,7 @@ void InsertFixup(punt z){
 	if (z==z->p->r){
 	    z=z->p;
 	    LeftRotate(z);}
-	z->p->c=false;
+ 	z->p->c=false;
 	z->p->p->c=true;
 	RightRotate(z->p->p);
       }
@@ -147,3 +155,11 @@ punt newnode(){
 
 void delete(){}
 void search(){}
+
+void InOrderWalk(punt start){
+  if (start!=tnil){
+  InOrderWalk(start->l);
+  printf("%s ",start->key);
+  InOrderWalk(start->r);
+  }
+}
