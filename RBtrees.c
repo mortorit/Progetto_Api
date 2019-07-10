@@ -171,7 +171,6 @@ punt newnode(){
 }
 
 void delete(punt z){
-  if (z==NULL) return;
   punt y,x;
  y=z;
  bool yoc= y->c;
