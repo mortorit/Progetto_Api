@@ -64,6 +64,7 @@ int main () {
   tnil->l=NULL;
   tnil->c=false;
   rootent=tnil;
+  list  iter;
  do {
     scanf("%s",buff);
     if (strcmp(buff,"addent")==0){
@@ -73,7 +74,13 @@ int main () {
     if (strcmp(buff,"print")==0){
       print2D(rootent);
     }
-    
+    if (strcmp(buff,"printsott")==0){
+      iter=rootent->myrel;
+      while (iter!=NULL){
+      print2D(iter->root);
+      iter=iter->next;
+      }
+    }
     if (strcmp(buff,"delent")==0){
       Delent();
     } 
@@ -121,21 +128,21 @@ void Addrel(){
   else{
     x=f->myrel;
     y=f->myrel;
-    if (x==f->myrel && strcmp(buff,x->next->nome)<0) {
+    if (x==f->myrel && strcmp(buff,x->nome)<0) {
       x=malloc(sizeof(Rel));
       initrel(x);
       x->next=f->myrel;
       f->myrel=x;
     }
     else{
-      while (strcmp(buff,x->nome)>0 && x!=NULL){
+      while ( x!=NULL && strcmp(buff,x->nome)>0){
 	  y=x;
 	  x=x->next;
 	}
-      if (strcmp(buff,x->nome)!=0){
+      if (x==NULL || strcmp(buff,x->nome)!=0){
 	x=malloc(sizeof(Rel));
 	initrel(x);
-	x->next=y->next->next;
+	x->next=y->next;
 	y->next=x;
       }
       }
@@ -301,7 +308,7 @@ void inizializza(punt p){
 void initrel(list p){
   p->nome=(char *)malloc(sizeof(char)*strlen(buff));
   strcpy(p->nome,buff);
-  p->cont=1;
+  p->cont=0;
   p->root=tnil;
 }
 
