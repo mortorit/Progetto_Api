@@ -490,8 +490,8 @@ void addnewrel(){
    iter->n=malloc(sizeof(Tiporel));
    iter->n->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
    strcpy(iter->n->nomerel,buff);
-   iter->best=NULL;
-   iter->cont=0;
+   iter->n->best=NULL;
+   iter->n->cont=0;
   }
   
   }
