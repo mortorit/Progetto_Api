@@ -3,8 +3,15 @@
 #include <string.h>
 #include <stdbool.h>
 #define COUNT 10
+typedef struct max{
+  struct Nodo *ent;
+  struct max *next;
+} max;
+
 typedef struct Tiporel{
   char *nomerel;
+  max *best;
+  int cont;
   struct Tiporel *n;
 } Tiporel;
 
@@ -74,13 +81,6 @@ int main () {
     if (strcmp(buff,"print")==0){
       print2D(rootent);
     }
-    if (strcmp(buff,"printsott")==0){
-      iter=rootent->myrel;
-      while (iter!=NULL){
-      print2D(iter->root);
-      iter=iter->next;
-      }
-    }
     if (strcmp(buff,"delent")==0){
       Delent();
     } 
@@ -108,6 +108,8 @@ void Delent(){
 void Addrel(){
   punt f;
   list x,y;
+  max *del;
+  tr iter;
   flag=false;
   scanf("%s",buff);
   f=search(rootent);
@@ -150,7 +152,37 @@ void Addrel(){
   strcpy(buff,id1);
   free(id1);
   insert(&(x->root));
-  if (flag) x->cont++;
+  if (flag){
+    x->cont++;
+    iter=tipi;
+    while (strcmp(iter->nomerel,x->nome)!=0){
+      iter=iter->n;
+    }
+    if (iter->cont==0){
+      iter->cont=x->cont;
+      iter->best=malloc(sizeof(max));
+      iter->best->ent=f;
+    }
+    else{
+    if (iter->cont<x->cont){
+      iter->cont=x->cont;
+      del=iter->best;
+      while (del->next != NULL && del->ent!=f)
+	{
+	  iter->best=iter->best->next;
+	  free(del);
+	  del=iter->best;
+	}
+      del->ent=f;
+    }
+    else if (iter->cont==x->cont){
+      del=iter->best;
+      while (del->next!=NULL && del->ent!=f) del=del->next;
+      del->next=malloc(sizeof(max));
+      del->next->ent=f;
+    }
+    }
+  }
 }
 
 
@@ -452,12 +484,17 @@ void addnewrel(){
     tipi=malloc(sizeof(Tiporel));
     tipi->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
     strcpy(tipi->nomerel,buff);
+    tipi->best=NULL;
+    tipi->cont=0;
   }
     else {
    iter->n=malloc(sizeof(Tiporel));
    iter->n->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
    strcpy(iter->n->nomerel,buff);
+   iter->best=NULL;
+   iter->cont=0;
   }
+  
   }
 
 void print2DUtil(punt root, int space)  
