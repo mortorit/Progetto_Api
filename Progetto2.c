@@ -41,15 +41,16 @@ tr tipi=NULL;
 punt tnil=NULL; 
 punt rootent=NULL;
 bool flag=false;
+void findmax(tr *tipor,punt x);
 void inizializza(punt p);
 void initrel(list p);
 punt newnode();
 void insert(punt *root);
-void delete(punt z,punt root);
+void delete(punt z,punt *root);
 punt search(punt x);
 void InsertFixup(punt z,punt *root);
-void DeleteFixup(punt x,punt root);
-void RBTransplant(punt u,punt v,punt root);
+void DeleteFixup(punt x,punt *root);
+void RBTransplant(punt u,punt v,punt *root);
 punt TreeMin(punt x);
 void RightRotate(punt x,punt *root);
 void LeftRotate(punt x,punt *root);
@@ -108,6 +109,7 @@ void Addrel(){
   punt f;
   list x,y;
   max *del;
+  max *tmp;
   tr iter;
   flag=false;
   scanf("%s",buff);
@@ -166,7 +168,7 @@ void Addrel(){
     if (iter->cont<x->cont){
       iter->cont=x->cont;
       del=iter->best;
-      while (del->next != NULL && del->ent!=f)
+      while (del->next != NULL)
 	{
 	  iter->best=iter->best->next;
 	  free(del);
@@ -175,27 +177,107 @@ void Addrel(){
       del->ent=f;
     }
     else if (iter->cont==x->cont){
-      del=iter->best;
-      while (del->next!=NULL && del->ent!=f) del=del->next;
-      del->next=malloc(sizeof(max));
-      del->next->ent=f;
+     del=iter->best;
+     while (del->next!=NULL && strcmp(f->key,del->next->ent->key)>0) del=del->next;
+     if (del==iter->best && strcmp(f->key,del->ent->key)<0){
+       tmp=malloc(sizeof(max));
+       tmp->next=del;
+       tmp->ent=f;
+       iter->best=tmp;
+     }
+     else{
+     tmp=del->next;
+     del->next=malloc(sizeof(max));
+     del->next->ent=f;
+     del->next->next=tmp;
+     }  
     }
-    }
+   }
   }
 }
 
 
 
 void Delrel(){
+  punt f=tnil;
+  punt n=tnil;
+  list x=NULL;
+  list y=NULL;
+  tr iter=NULL;
+  tr iterp=NULL;
+  max *del=NULL;
+  max *delp=NULL;
   scanf("%s",buff);
+  f=search(rootent);
+  if (f==tnil) return;
   char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
   strcpy(id1,buff);
   scanf("%s",buff);
-  char *id2 = (char *) malloc(strlen(buff) * sizeof (char));
-  strcpy(id2,buff);
+  f=search(rootent);
+  if (f==tnil) return;
   scanf("%s",buff);
-  char *idrel = (char *) malloc(strlen(buff) * sizeof (char));
-  strcpy(idrel,buff);
+  if (!relexists()) return;
+  x=f->myrel;
+  while (x!=NULL && strcmp(x->nome,buff)!=0) {
+    y=x;
+    x=x->next; }
+  strcpy(buff,id1);
+  n=search(x->root);
+  if (n==tnil) return;
+  delete(n,&(x->root));
+  (x->cont)--;
+  iter=tipi;
+  while (strcmp(iter->nomerel,x->nome)!=0){
+    iterp=iter;
+    iter=iter->n;
+  }
+  if ((x->cont)+1==iter->cont){
+    del=iter->best;
+    while (del->ent!=f) {
+      delp=del;
+      del=del->next;
+    }
+    if (del==iter->best && del->next==NULL){
+      iter->cont=x->cont;
+      findmax(&iter,rootent);
+      if (iter->cont==0){
+	  if (iter->n==NULL && iter==tipi){
+	    tipi=NULL;
+	  }
+	  else if (iter=tipi){
+	    tipi=iter->n;
+	  }
+	  else {
+	    iterp->n=iter->n;
+	  }
+	  free(iter->nomerel);
+	  free(iter);
+      }
+    }
+    else{
+      if (del==iter->best) {
+	iter->best=iter->best->next;
+	free(del);
+      }
+      else {
+      delp->next=del->next;
+      free(del);
+      }
+    }   
+  }
+  if (x->cont==0) {
+    if (x->next==NULL && x==f->myrel){
+      f->myrel=NULL;
+    }
+    else if (x=f->myrel){
+      f->myrel=x->next;
+    }
+    else {
+      y->next=x->next;
+    }
+    free(x->nome);
+    free(x);
+  }
 }
 
 
@@ -348,12 +430,11 @@ punt newnode(){
   inizializza(new);
   return new;
 }
-/*
-void delete(punt z,punt root){
-  if (z==NULL) return;
-  punt y,x;
- y=z;
+
+void delete(punt z,punt *root){
+ punt y,x;
  bool yoc= y->c;
+ y=z;
  if (z->l==tnil){
    x=z->r;
    RBTransplant(z,z->r,root);			
@@ -377,14 +458,14 @@ void delete(punt z,punt root){
    y->l->p=y;
    y->c=z->c;
  }
- if (yoc==false) DeleteFixup(x,root);
+ if (yoc==false && x!=tnil) DeleteFixup(x,root);
  free(z->key);
  free(z);
 }
 
-void DeleteFixup(punt x,punt root){
+void DeleteFixup(punt x,punt *root){
   punt w;
-  while (x!=root && x->c==false){
+  while (x!=*root && x->c==false){
     if (x==x->p->l){
       w=x->p->r;
       if (w->c==true){
@@ -408,7 +489,7 @@ void DeleteFixup(punt x,punt root){
 	x->p->c=false;
 	w->r->c=false;
 	LeftRotate(x->p,root);
-	x=root;
+	x=*root;
       }
     }
     else{
@@ -434,12 +515,12 @@ void DeleteFixup(punt x,punt root){
 	x->p->c=false;
 	w->r->c=false;
 	RightRotate(x->p,root);
-	x=root;
+	x=*root;
       } 
     }
   }
   x->c=false;
-  }*/
+  }
 punt search(punt x){
   if (x==tnil || strcmp(buff,x->key)==0) return x;
   if (strcmp(buff,x->key)<0) return search(x->l);
@@ -454,8 +535,8 @@ void InOrderWalk(punt start){
   }
 }
 
-void RBTransplant(punt u,punt v,punt root){
-  if (u->p==tnil) root=v;
+void RBTransplant(punt u,punt v,punt *root){
+  if (u->p==tnil) *root=v;
   else if (u==u->p->l) u->p->l=v;
   else u->p->r= v;
   v->p=u->p;
@@ -477,8 +558,8 @@ bool relexists(){
 
 void addnewrel(){
   tr iter=tipi;
-  while (iter!=NULL && iter->n!=NULL ) {
-    iter=iter->n;}
+  tr tmp=NULL;
+  while (iter!=NULL && iter->n!=NULL && strcmp(buff,iter->n->nomerel)>0) iter=iter->n;
   if (iter==NULL){
     tipi=malloc(sizeof(Tiporel));
     tipi->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
@@ -486,15 +567,76 @@ void addnewrel(){
     tipi->best=NULL;
     tipi->cont=0;
   }
-    else {
+  else if(iter==tipi && iter->n==NULL && strcmp(buff,iter->nomerel)<0) {
+    tmp=malloc(sizeof(Tiporel));
+    tmp->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
+    strcpy(tmp->nomerel,buff);
+    tmp->best=NULL;
+    tmp->cont=0;
+    tmp->n=iter;
+    tipi=tmp;
+  }
+  else{
    iter->n=malloc(sizeof(Tiporel));
    iter->n->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
    strcpy(iter->n->nomerel,buff);
    iter->n->best=NULL;
    iter->n->cont=0;
   }
-  
+}
+
+
+
+
+
+
+
+void findmax(tr *tipor,punt x){
+  list y=x->myrel;
+  max *ins;
+  max *tmp;
+  if (x==tnil) return;
+  while (y!=NULL && strcmp(y->nome,(*tipor)->nomerel)!=0) y=y->next;
+  if (y!=NULL) {
+  if (y->cont>(*tipor)->cont) {
+    (*tipor)->cont=y->cont;
+    ins=(*tipor)->best;
+      while (ins->next != NULL)
+	{
+	  (*tipor)->best=(*tipor)->best->next;
+	  free(ins);
+	  ins=(*tipor)->best;
+	}
+      ins->ent=x;
   }
+  else if (y->cont!=0 && (*tipor)->cont==y->cont){
+    ins=(*tipor)->best;
+     while (ins->next!=NULL && strcmp(x->key,ins->next->ent->key)>0) ins=ins->next;
+     if (ins->next!=NULL && ins->ent!=x && ins->next->ent!=x){
+       tmp=ins->next;
+       ins->next=malloc(sizeof(max));
+       ins->next->ent=x;
+       ins->next->next=tmp;
+     }
+     else if (ins->next==NULL) {
+       if(ins==(*tipor)->best && strcmp(x->key,ins->ent->key)<0){
+	 tmp=malloc(sizeof(max));
+	 tmp->ent=x;
+	 tmp->next=ins;
+	 (*tipor)->best=tmp;
+       }
+       else {
+	 ins->next=malloc(sizeof(max));
+	 ins->next->next=NULL;
+	 ins->next->ent=x;
+       }
+     }
+  }
+  }
+  findmax(tipor,x->r);
+  findmax(tipor,x->l);
+}
+  
 
 void print2DUtil(punt root, int space)  
 {  
