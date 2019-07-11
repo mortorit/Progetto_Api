@@ -71,7 +71,6 @@ int main () {
   tnil->l=NULL;
   tnil->c=false;
   rootent=tnil;
-  list  iter;
  do {
     scanf("%s",buff);
     if (strcmp(buff,"addent")==0){
@@ -257,7 +256,7 @@ void insert(punt *root){
 
 
 void InsertFixup(punt z,punt *root){
-  punt y,x;
+  punt y;
   while (z->p->c==true){
     if((z->p)==(z->p->p->l)){
       y=z->p->p->r;
