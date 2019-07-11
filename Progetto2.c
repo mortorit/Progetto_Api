@@ -566,8 +566,9 @@ void addnewrel(){
     strcpy(tipi->nomerel,buff);
     tipi->best=NULL;
     tipi->cont=0;
+    tipi->n=NULL;
   }
-  else if(iter==tipi && iter->n==NULL && strcmp(buff,iter->nomerel)<0) {
+  else if(iter==tipi && strcmp(buff,iter->nomerel)<0) {
     tmp=malloc(sizeof(Tiporel));
     tmp->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
     strcpy(tmp->nomerel,buff);
@@ -577,11 +578,13 @@ void addnewrel(){
     tipi=tmp;
   }
   else{
+   tmp=iter->n;
    iter->n=malloc(sizeof(Tiporel));
    iter->n->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
    strcpy(iter->n->nomerel,buff);
    iter->n->best=NULL;
    iter->n->cont=0;
+   iter->n->n=tmp;
   }
 }
 
