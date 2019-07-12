@@ -57,6 +57,7 @@ void LeftRotate(punt x,punt *root);
 void InOrderWalk(punt start);
 void print2DUtil(punt root, int space);
 void print2D(punt root);
+void cleanup(punt node);
 char buff[100000];
 void Addent();
 bool relexists();
@@ -98,9 +99,43 @@ int main () {
 
 
 void Delent(){
+  punt f=NULL;
+  list x,y;
+  tr iter;
+  tr iterp;
   scanf("%s",buff);
-  char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
-  strcpy(id1,buff);
+  f=search(rootent);
+  x=f->myrel;
+  while(f->myrel!=NULL){
+    f->myrel=f->myrel->next;
+    while(x->root!=tnil) delete(x->root,&(x->root));
+    free(x->nome);
+    free(x);
+    x=f->myrel;
+  }
+  delete(f,&rootent);
+  cleanup(rootent);
+  iter=tipi;
+  iterp=iter;
+  while (iter!=NULL){
+    iter->cont=0;
+    findmax(&iter,rootent);
+    if (iter->cont==0){
+      if (iter->n==NULL && iter==tipi){
+	tipi=NULL;
+      }
+      else if (iter==tipi){
+	tipi=iter->n;
+      }
+      else {
+	iterp->n=iter->n;
+      }
+      free(iter->nomerel);
+      free(iter);
+    }
+    iterp=iter;
+    iter=iter->n;
+  }
 }
 
 
@@ -283,34 +318,25 @@ void Delrel(){
 
 
 void Report(){
-}
-
-
-
-		  /*int main(){
-
-  punt f;
-  while (true){
-  scanf("%s",buff);
-  if (strcmp(buff,"insert")==0) insert();
-  if (strcmp(buff,"delete")==0) {
-    scanf("%s",buff);
-    f= search(root);
-    if (f!=tnil) delete(f);
+  tr iter;
+  max *rep;
+  iter=tipi;
+  if (iter==NULL){
+    printf("none");
+    return;
   }
-  
-  if (strcmp(buff,"search")==0) {
-    scanf("%s",buff);
-    f=search(root);
-  }
-  if (strcmp(buff,"visit")==0) InOrderWalk(root);
-  if (strcmp(buff,"end")==0) exit(0);
-  if (strcmp(buff,"print")==0) print2D(root);
-  
-  
+  while (iter!=NULL){
+    rep=iter->best;
+    if(rep!=NULL);
+    printf("%s ",iter->nomerel);
+    while (rep!=NULL){
+      printf("%s ",rep->ent->key);
+      rep=rep->next;
+    }
+    printf("%d;",iter->cont);
+    iter=iter->n;
   }
 }
-		  */
 
 void insert(punt *root){
   punt y,x;
@@ -433,7 +459,7 @@ punt newnode(){
 
 void delete(punt z,punt *root){
  punt y,x;
- bool yoc= y->c;
+ bool yoc= z->c;
  y=z;
  if (z->l==tnil){
    x=z->r;
@@ -635,7 +661,40 @@ void findmax(tr *tipor,punt x){
   findmax(tipor,x->l);
 }
   
-
+void cleanup(punt node){
+  list x,y,tmp;
+  punt f;
+  if(node==tnil) return;
+  x=node->myrel;
+  y=x;
+  while (x!=NULL) {
+    f=search(x->root);
+    if (f!=tnil){
+      delete(f,&(x->root));
+      (x->cont)--;
+    if(x->cont==0){
+      tmp=x;
+      if (x=node->myrel) {
+	node->myrel=x->next;
+	x=x->next;
+	y=x;
+      }
+      else {
+	y->next=x->next;
+	x=x->next;
+      }
+      free(tmp->nome);
+      free(tmp);
+    }
+    }
+    else{
+      y=x;
+      x=x->next;
+    }
+  }
+      cleanup(node->r);
+      cleanup(node->l);
+}
 void print2DUtil(punt root, int space)  
 {  
     // Base case  
