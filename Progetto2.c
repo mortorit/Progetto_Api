@@ -244,7 +244,7 @@ void Delrel(){
 	  if (iter->n==NULL && iter==tipi){
 	    tipi=NULL;
 	  }
-	  else if (iter=tipi){
+	  else if (iter==tipi){
 	    tipi=iter->n;
 	  }
 	  else {
@@ -614,26 +614,21 @@ void findmax(tr *tipor,punt x){
   }
   else if (y->cont!=0 && (*tipor)->cont==y->cont){
     ins=(*tipor)->best;
-     while (ins->next!=NULL && strcmp(x->key,ins->next->ent->key)>0) ins=ins->next;
-     if (ins->next!=NULL && ins->ent!=x && ins->next->ent!=x){
-       tmp=ins->next;
-       ins->next=malloc(sizeof(max));
-       ins->next->ent=x;
-       ins->next->next=tmp;
-     }
-     else if (ins->next==NULL) {
-       if(ins==(*tipor)->best && strcmp(x->key,ins->ent->key)<0){
-	 tmp=malloc(sizeof(max));
-	 tmp->ent=x;
-	 tmp->next=ins;
-	 (*tipor)->best=tmp;
-       }
-       else {
-	 ins->next=malloc(sizeof(max));
-	 ins->next->next=NULL;
-	 ins->next->ent=x;
-       }
-     }
+    if (strcmp(x->key,ins->ent->key)<0){
+      tmp=malloc(sizeof(max));
+      tmp->ent=x;
+      tmp->next=ins;
+      (*tipor)->best=tmp;
+    }
+    else{
+      while (ins->next!=NULL && strcmp(x->key,ins->next->ent->key)>0) ins=ins->next;
+      if ((ins->next!=NULL && ins->ent!=x && ins->next->ent!=x)||(ins->next==NULL && ins->ent!=x)){
+	tmp=ins->next;
+	ins->next=malloc(sizeof(max));
+	ins->next->ent=x;
+	ins->next->next=tmp;
+      }
+    }
   }
   }
   findmax(tipor,x->r);
