@@ -79,32 +79,34 @@ int main () {
       scanf("%s",buff);
       insert(&rootent);
     }
-    if (strcmp(buff,"print")==0){
+    else if (strcmp(buff,"print")==0){
       print2D(rootent);
     }
-    if (strcmp(buff,"delent")==0){
+    else if (strcmp(buff,"delent")==0){
       Delent();
     } 
-    if (strcmp(buff,"addrel")==0){
+    else if (strcmp(buff,"addrel")==0){
       Addrel();
     } 
-    if (strcmp(buff,"delrel")==0){
+    else if (strcmp(buff,"delrel")==0){
       Delrel();
     }
-    if (strcmp(buff,"report")==0){
+    else if (strcmp(buff,"report")==0){
       Report();
     }
  } while (strcmp(buff,"end")!=0);
+ return 0;
 }
 
 
 void Delent(){
   punt f=NULL;
-  list x,y;
+  list x;
   tr iter;
   tr iterp;
   scanf("%s",buff);
   f=search(rootent);
+  if(f==tnil) return;
   x=f->myrel;
   while(f->myrel!=NULL){
     f->myrel=f->myrel->next;
@@ -150,7 +152,7 @@ void Addrel(){
   scanf("%s",buff);
   f=search(rootent);
   if (f==tnil) return;
-  char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
+  char *id1 = (char *) malloc(strlen(buff) * sizeof (char)+1);
   strcpy(id1,buff);
   scanf("%s",buff);
   f=search(rootent);
@@ -198,6 +200,7 @@ void Addrel(){
       iter->cont=x->cont;
       iter->best=malloc(sizeof(max));
       iter->best->ent=f;
+      iter->best->next=NULL;
     }
     else{
     if (iter->cont<x->cont){
@@ -210,6 +213,7 @@ void Addrel(){
 	  del=iter->best;
 	}
       del->ent=f;
+      del->next=NULL;
     }
     else if (iter->cont==x->cont){
      del=iter->best;
@@ -245,7 +249,7 @@ void Delrel(){
   scanf("%s",buff);
   f=search(rootent);
   if (f==tnil) return;
-  char *id1 = (char *) malloc(strlen(buff) * sizeof (char));
+  char *id1 = (char *) malloc(strlen(buff) * sizeof (char)+1);
   strcpy(id1,buff);
   scanf("%s",buff);
   f=search(rootent);
@@ -256,6 +260,7 @@ void Delrel(){
   while (x!=NULL && strcmp(x->nome,buff)!=0) {
     y=x;
     x=x->next; }
+  if(x==NULL) return;
   strcpy(buff,id1);
   n=search(x->root);
   if (n==tnil) return;
@@ -304,7 +309,7 @@ void Delrel(){
     if (x->next==NULL && x==f->myrel){
       f->myrel=NULL;
     }
-    else if (x=f->myrel){
+    else if (x==f->myrel){
       f->myrel=x->next;
     }
     else {
@@ -322,7 +327,7 @@ void Report(){
   max *rep;
   iter=tipi;
   if (iter==NULL){
-    printf("none");
+    printf("none\n");
     return;
   }
   while (iter!=NULL){
@@ -333,9 +338,10 @@ void Report(){
       printf("%s ",rep->ent->key);
       rep=rep->next;
     }
-    printf("%d;",iter->cont);
+    printf("%d; ",iter->cont);
     iter=iter->n;
   }
+  printf("\n");
 }
 
 void insert(punt *root){
@@ -345,7 +351,7 @@ void insert(punt *root){
   if (y!=tnil) return;
   flag=true;
   new=newnode();
-  new->key= (char *) malloc(strlen(buff) * sizeof (char));
+  new->key= (char *) malloc(strlen(buff) * sizeof (char)+1);
   strcpy(new->key,buff);
   y=tnil;
   x=*root;
@@ -484,7 +490,7 @@ void delete(punt z,punt *root){
    y->l->p=y;
    y->c=z->c;
  }
- if (yoc==false && x!=tnil) DeleteFixup(x,root);
+ if (yoc==false) DeleteFixup(x,root);
  free(z->key);
  free(z);
 }
@@ -506,10 +512,10 @@ void DeleteFixup(punt x,punt *root){
       }
       else {
 	if (w->r->c==false){
-	w->l->c=false;
-	w->c=true;
-	RightRotate(w,root);
-	w=x->p->r;
+	  w->l->c=false;
+	  w->c=true;
+	  RightRotate(w,root);
+	  w=x->p->r;
 	}
 	w->c=x->p->c;
 	x->p->c=false;
@@ -539,7 +545,7 @@ void DeleteFixup(punt x,punt *root){
 	}
 	w->c=x->p->c;
 	x->p->c=false;
-	w->r->c=false;
+	w->l->c=false;
 	RightRotate(x->p,root);
 	x=*root;
       } 
@@ -588,7 +594,7 @@ void addnewrel(){
   while (iter!=NULL && iter->n!=NULL && strcmp(buff,iter->n->nomerel)>0) iter=iter->n;
   if (iter==NULL){
     tipi=malloc(sizeof(Tiporel));
-    tipi->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
+    tipi->nomerel=(char *)malloc(sizeof(char)*strlen(buff)+1);
     strcpy(tipi->nomerel,buff);
     tipi->best=NULL;
     tipi->cont=0;
@@ -596,7 +602,7 @@ void addnewrel(){
   }
   else if(iter==tipi && strcmp(buff,iter->nomerel)<0) {
     tmp=malloc(sizeof(Tiporel));
-    tmp->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
+    tmp->nomerel=(char *)malloc(sizeof(char)*strlen(buff)+1);
     strcpy(tmp->nomerel,buff);
     tmp->best=NULL;
     tmp->cont=0;
@@ -606,7 +612,7 @@ void addnewrel(){
   else{
    tmp=iter->n;
    iter->n=malloc(sizeof(Tiporel));
-   iter->n->nomerel=(char *)malloc(sizeof(char)*strlen(buff));
+   iter->n->nomerel=(char *)malloc(sizeof(char)*strlen(buff)+1);
    strcpy(iter->n->nomerel,buff);
    iter->n->best=NULL;
    iter->n->cont=0;
@@ -674,7 +680,7 @@ void cleanup(punt node){
       (x->cont)--;
     if(x->cont==0){
       tmp=x;
-      if (x=node->myrel) {
+      if (x==node->myrel) {
 	node->myrel=x->next;
 	x=x->next;
 	y=x;
