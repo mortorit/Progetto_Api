@@ -126,8 +126,8 @@ void read_input(){
 
   do{
     if(readen > buf_len / 10 * 9){ //buf is fuller than 90%
-      buff = realloc(buff, sizeof(char) * (buf_len + increment));
-      buf_len += increment;
+      buff = realloc(buff, sizeof(char) * (buf_len*5));
+      buf_len = buf_len*5;
     }
     read_n = fread(buff, 1, sizeof(char), stdin);
     readen += (read_n / sizeof(char));
