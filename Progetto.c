@@ -81,10 +81,12 @@ int main () {
   tnil->c=false;
   rootent=tnil;
 
-  char command[7];
+  char command[15];
 
  do {
     scanf("%s", command);
+    char c;
+    fread(&c, 1, 1, stdin);
     if (strncmp(command,"addent", 6)==0){
       read_input();
       insert(&rootent);
@@ -105,7 +107,7 @@ int main () {
       Report();
     }
 
- } while (strcmp(command,"end")!=0);
+ } while (strncmp(command,"end", 3)!=0);
 
  FREE(buff);
  return 0;
@@ -132,13 +134,9 @@ void read_input(){
     read_n = fread(buff + readen, 1, sizeof(char), stdin);
     readen += (read_n / sizeof(char));
 
-  }while(read_n != 0 && buff[readen - 1] != '\n');
+  }while(read_n != 0 && buff[readen - 1] != '\n' && buff[readen - 1] != ' ');
 
-  if(readen == buf_len)
-    buff = realloc(buff, sizeof(char) * (buf_len + 1));
-
-  buff[readen] = '\0';
-
+  buff[readen - 1] = '\0';
 }
 
 void Delent(){
@@ -180,6 +178,7 @@ void Delent(){
     iterp=iter;
     iter=iter->n;
   }
+
 }
 
 
@@ -195,7 +194,7 @@ void Addrel(){
   f=search(rootent);
   if (f==tnil) return;
   char *id1 = (char *) malloc(strlen(buff) * sizeof (char)+1);
-  strcpy(id1,buff);
+  strcpy(id1, buff);
   read_input();
   f=search(rootent);
   if (f==tnil)return;
