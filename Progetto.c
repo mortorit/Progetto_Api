@@ -579,7 +579,7 @@ punt TreeMin(punt x){
 
 bool relexists(){
   tr iter=tipi;
-  while (iter!=NULL){
+  while (iter!=NULL && strcmp(buff,iter->nomerel)<=0){
     if (strcmp(buff,iter->nomerel)==0) return true;
     iter=iter->n;
   }
