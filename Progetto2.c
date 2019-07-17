@@ -55,8 +55,6 @@ punt TreeMin(punt x);
 void RightRotate(punt x,punt *root);
 void LeftRotate(punt x,punt *root);
 void InOrderWalk(punt start);
-void print2DUtil(punt root, int space);
-void print2D(punt root);
 void cleanup(punt node);
 char buff[100000];
 void Addent();
@@ -78,9 +76,6 @@ int main () {
     if (strcmp(buff,"addent")==0){
       scanf("%s",buff);
       insert(&rootent);
-    }
-    else if (strcmp(buff,"print")==0){
-      print2D(rootent);
     }
     else if (strcmp(buff,"delent")==0){
       Delent();
@@ -701,33 +696,3 @@ void cleanup(punt node){
       cleanup(node->r);
       cleanup(node->l);
 }
-void print2DUtil(punt root, int space)  
-{  
-    // Base case  
-    if (root == tnil)
-        return;  
-  
-    // Increase distance between levels  
-    space += COUNT;  
-  
-    // Process right child first  
-    print2DUtil(root->r, space);  
-  
-    // Print current node after space  
-    // count  
-    printf("\n");  
-    for (int i = COUNT; i < space; i++)  
-      printf(" ");
-    printf("%s  %d\n",root->key,root->c);  
-  
-    // Process left child  
-    print2DUtil(root->l, space);  
-}  
-  
-// Wrapper over print2DUtil()  
-void print2D(punt root)  
-{
-    // Pass initial space count as 0  
-    print2DUtil(root, 0);  
-}  
-
