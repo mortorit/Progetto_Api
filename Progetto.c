@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #define COUNT 10
 
+#define FREE(x)\
+  if(x != NULL) {free(x); x = NULL;}
+
 typedef struct max{
   struct Nodo *ent;
   struct max *next;
@@ -16,7 +19,7 @@ typedef struct Tiporel{
   struct Tiporel *n;
 } Tiporel;
 
-typedef Tiporel *tr;
+typedef Tiporel* tr;
 
 typedef struct Nodo {
   struct Nodo *r;
@@ -43,7 +46,9 @@ tr tipi=NULL;
 punt tnil=NULL; 
 punt rootent=NULL;
 bool flag=false;
-char buff[100000];
+
+char *buff = NULL;
+size_t buf_len = 0;
 
 punt newnode();
 punt search(punt x);
@@ -67,6 +72,7 @@ void Delent();
 void Addrel();
 void Delrel();
 void Report();
+void read_input();
 
 int main () {
   tnil=malloc(sizeof(Nodo));
@@ -74,35 +80,73 @@ int main () {
   tnil->l=NULL;
   tnil->c=false;
   rootent=tnil;
+
+  char command[7];
+
  do {
-    scanf("%s",buff);
-    if (strcmp(buff,"addent")==0){
-      scanf("%s",buff);
+    scanf("%s",command);
+    if (strncmp(command,"addent", 6)==0){
+      read_input();
       insert(&rootent);
     }
-    else if (strcmp(buff,"delent")==0){
+    else if (strncmp(command,"delent", 6)==0){
+
       Delent();
     } 
-    else if (strcmp(buff,"addrel")==0){
+    else if (strncmp(command,"addrel", 6)==0){
+
       Addrel();
     } 
-    else if (strcmp(buff,"delrel")==0){
+    else if (strncmp(command,"delrel", 6)==0){
+
       Delrel();
     }
-    else if (strcmp(buff,"report")==0){
+    else if (strncmp(command,"report", 6)==0){
       Report();
     }
- } while (strcmp(buff,"end")!=0);
+
+ } while (strcmp(command,"end")!=0);
+
+ FREE(buff);
  return 0;
 }
 
+//reads from input until new line and stores in 'buff'
+void read_input(){
+  static int increment = 1000;
+
+  size_t buf_len = increment;
+
+  if(buff == NULL) {
+    buf_len = increment;
+    buff = malloc(sizeof(char) * buf_len);
+  }
+  size_t readen = 0; //total bytes read
+  size_t read_n = 0; //bytes read from stdin
+
+  do{
+    if(readen > buf_len / 10 * 9){ //buf is fuller than 90%
+      buff = realloc(buff, sizeof(char) * (buf_len + increment));
+      buf_len += increment;
+    }
+    read_n = fread(buff, 1, sizeof(char), stdin);
+    readen += (read_n / sizeof(char));
+
+  }while(read_n != 0 && buff[readen - 1] != '\n');
+
+  if(readen == buf_len)
+    buff = realloc(buff, sizeof(char) * (buf_len + 1));
+
+  buff[readen] = '\0';
+
+}
 
 void Delent(){
+  read_input();
   punt f=NULL;
   list x;
   tr iter;
   tr iterp;
-  scanf("%s",buff);
   f=search(rootent);
   if(f==tnil) return;
   x=f->myrel;
@@ -141,21 +185,21 @@ void Delent(){
 
 
 void Addrel(){
+  read_input();
   punt f;
   list x,y;
   max *del;
   max *tmp;
   tr iter;
   flag=false;
-  scanf("%s",buff);
   f=search(rootent);
   if (f==tnil) return;
   char *id1 = (char *) malloc(strlen(buff) * sizeof (char)+1);
   strcpy(id1,buff);
-  scanf("%s",buff);
+  read_input();
   f=search(rootent);
   if (f==tnil)return;
-  scanf("%s",buff);
+  read_input();
   if (!relexists()) addnewrel();
   if (f->myrel==NULL) {
     f->myrel=malloc(sizeof(Rel));
@@ -236,6 +280,7 @@ void Addrel(){
 
 
 void Delrel(){
+  read_input();
   punt f=tnil;
   punt n=tnil;
   list x=NULL;
@@ -244,15 +289,14 @@ void Delrel(){
   tr iterp=NULL;
   max *del=NULL;
   max *delp=NULL;
-  scanf("%s",buff);
   f=search(rootent);
   if (f==tnil) return;
   char *id1 = (char *) malloc(strlen(buff) * sizeof (char)+1);
   strcpy(id1,buff);
-  scanf("%s",buff);
+  read_input();
   f=search(rootent);
   if (f==tnil) return;
-  scanf("%s",buff);
+  read_input();
   if (!relexists()) return;
   x=f->myrel;
   while (x!=NULL && strcmp(x->nome,buff)!=0) {
