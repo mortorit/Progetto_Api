@@ -84,7 +84,7 @@ int main () {
   char command[7];
 
  do {
-    scanf("%s",command);
+    scanf("%s", command);
     if (strncmp(command,"addent", 6)==0){
       read_input();
       insert(&rootent);
@@ -129,7 +129,7 @@ void read_input(){
       buff = realloc(buff, sizeof(char) * (buf_len*5));
       buf_len = buf_len*5;
     }
-    read_n = fread(buff, 1, sizeof(char), stdin);
+    read_n = fread(buff + readen, 1, sizeof(char), stdin);
     readen += (read_n / sizeof(char));
 
   }while(read_n != 0 && buff[readen - 1] != '\n');
