@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #define COUNT 10
+
 typedef struct max{
   struct Nodo *ent;
   struct max *next;
@@ -37,10 +38,13 @@ typedef struct Rel {
 } Rel;
 
 typedef Rel *list;
+
 tr tipi=NULL;
 punt tnil=NULL; 
 punt rootent=NULL;
 bool flag=false;
+char buff[100000];
+
 void findmax(tr *tipor,punt x);
 void inizializza(punt p);
 void initrel(list p);
@@ -56,7 +60,6 @@ void RightRotate(punt x,punt *root);
 void LeftRotate(punt x,punt *root);
 void InOrderWalk(punt start);
 void cleanup(punt node);
-char buff[100000];
 void Addent();
 bool relexists();
 void addnewrel();
